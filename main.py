@@ -1,4 +1,9 @@
-
+# 网址： 
+# https://www.novelpalace.com/category/fated-to-my-forbidden-alpha-novel-book-free-online-alpha-alexander-selene/
+import requests
+from bs4 import BeautifulSoup
+import json
+import requests
 
 #在此示例中，我们删除了':authority', ':method', ':path', 和 ':scheme' 因为这些是HTTP/2中使用的特殊表头。现在你的headers应该是有效的，并且可以正常使用requests库来发送GET请求。记得将'Cookie': 'your-cookie-value'中的your-cookie-value替换为实际的cookie
 # 自定义表头
