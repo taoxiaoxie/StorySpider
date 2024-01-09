@@ -1,3 +1,9 @@
+import os
+import json
+from docx import Document
+import uuid
+import tiktoken
+
 # 网址： 
 # https://www.novelpalace.com/category/fated-to-my-forbidden-alpha-novel-book-free-online-alpha-alexander-selene/
 import requests
@@ -104,3 +110,74 @@ with open('fated-to-my-forbidden-alpha.txt','w',encoding='utf-8') as fp:
             fp.write(title+':'+clean_content+'\n')
             print(title+'爬取成功!!!')
         
+
+# # To get the tokeniser corresponding to a specific model in the OpenAI API:
+# enc = tiktoken.encoding_for_model("gpt-4")
+# token_openai = len(enc.encode(value_text))
+
+# # 去掉文件名的 .docx 后缀
+# file_name_without_extension = os.path.splitext(file_name)[0]
+
+# request_id = str(uuid.uuid4())
+
+
+def read_docx(file_path):
+    document = Document(file_path)
+    text = ' '.join([paragraph.text for paragraph in document.paragraphs])
+    return text
+
+
+source="editor selected"
+folder_path = 'editor selected'
+
+count=0
+
+json_data = []
+enc = tiktoken.encoding_for_model("gpt-4")
+for root, dirs, files in os.walk(folder_path):
+    for file_name in files:
+        if file_name.endswith('.docx') and not file_name.startswith('~$'):
+            file_path = os.path.join(root, file_name)
+            text = read_docx(file_path)
+            text_enc = enc.encode(text) 
+            tokens_count = len(text_enc)
+            # 分割文本
+            #.encode()方法将文本字符串转换为标记整数列表。
+            # #encoding.encode("tiktoken is great!")
+            #.decode（）将标记整数列表转换为字符串
+            # encoding.decode([83, 1609, 5963, 374, 2294, 0])
+            parts = [text_enc[i:i + 4000] for i in range(0, len(text_enc), 4000)]
+            for i, part in enumerate(parts):
+                token_count = len(part)
+                uid = str(uuid.uuid4())
+                json_data.append({
+                    "meta": {
+                        "source": f"{source}",
+                        "token": token_count
+                    },
+                    "type": "pretrain",
+                    "id": uid,
+                    "group_id": f"{uid}-light-novel",
+                    "conversations": [
+                        {
+                            # 去掉文件名的 .docx 后缀
+                            "from": "assistant",
+                            "value": enc.decode(part),
+                            "toxicity_score": {
+                                "TOXICITY": 0,
+                                "SEVERE_TOXICITY": 0,
+                                "PROFANITY": 0,
+                                "SEXUALLY_EXPLICIT": 0,
+                                "FLIRTATION": 0
+                            }
+                        }
+                    ]
+                })
+            print(count)
+            count+=1
+            
+with open('EditorTop.json', 'w', encoding='utf-8') as f:
+    json.dump(json_data, f, ensure_ascii=False, indent=4)
+    
+print(count)
+print(len(json_data))

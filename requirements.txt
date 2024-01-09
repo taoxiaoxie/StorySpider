@@ -1,2 +1,6 @@
 bs4
 requests
+wheel
+twisted
+pywin32
+scrapy
