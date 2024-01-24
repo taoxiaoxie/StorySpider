@@ -22,32 +22,10 @@
 pip3 install -r requirements.txt
 ```
 
-2. 下载huggingface 项目
+2. 运行爬虫项目
+https://www.goodnovel.com/stories/novels
+
+
 ```bash
-git clone https://huggingface.co/datasets/alpindale/visual-novels
+url = "https://www.goodnovel.com/stories/Werewolf-novels"
 ```
-
-3. 运行爬虫项目
-```bash
-python3 main.py
-```
-> 注； 信号量设置为10，间隔时间为0.3s，(`config.py`)可根据自己的需求进行修改。
-> 太快会被封ip。
-
-
-# scrapy使用
-- 创建一个工程
-```bash
-scrapy startproject xxxPro
-cd xxxPro
-```
-- spiders子目录中创建一个爬虫文件
-```
-scrapy genspider spiderName www.xxx.com
-```
-- 执行工程：
-```
-scrapy crawl spiderName
-```
-
-# scrapy数据解析
